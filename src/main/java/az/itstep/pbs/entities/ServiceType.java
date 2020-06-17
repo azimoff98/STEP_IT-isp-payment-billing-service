@@ -1,6 +1,9 @@
 package az.itstep.pbs.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -10,6 +13,9 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "service")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ServiceType extends BaseEntity {
 
     private String serviceName;

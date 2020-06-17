@@ -1,5 +1,6 @@
 package az.itstep.pbs.resource;
 
+import az.itstep.pbs.dto.ServiceTypeCreateRequest;
 import az.itstep.pbs.entities.ServiceType;
 import az.itstep.pbs.service.impl.ServiceTypeService;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,9 @@ public class ServiceTypeResource {
 
     private final ServiceTypeService serviceTypeService;
 
-
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody ServiceType serviceType){
-        serviceTypeService.save(serviceType);
+    public ResponseEntity<?> save(@RequestBody ServiceTypeCreateRequest request){
+        serviceTypeService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body("Service type created");
@@ -42,6 +42,22 @@ public class ServiceTypeResource {
     public ResponseEntity<List<ServiceType>> findAll(){
         List<ServiceType> response = serviceTypeService.findAll();
         return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable Long id){
+        serviceTypeService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body("Service Type deleted successfully");
+    }
+
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody ServiceType serviceType){
+        ServiceType response = serviceTypeService.update(serviceType);
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
     }

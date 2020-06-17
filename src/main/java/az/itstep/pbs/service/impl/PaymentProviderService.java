@@ -1,7 +1,10 @@
 package az.itstep.pbs.service.impl;
 
+import az.itstep.pbs.dto.BaseDto;
+import az.itstep.pbs.dto.PaymentProviderCreateRequest;
 import az.itstep.pbs.entities.PaymentProvider;
 import az.itstep.pbs.exception.NotFoundException;
+import az.itstep.pbs.mapper.PaymentProviderCreateRequestMapper;
 import az.itstep.pbs.repository.PaymentProviderRepository;
 import az.itstep.pbs.service.BaseService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import java.util.List;
 public class PaymentProviderService implements BaseService<PaymentProvider> {
 
     private final PaymentProviderRepository paymentProviderRepository;
+    private final PaymentProviderCreateRequestMapper paymentProviderCreateRequestMapper;
 
     @Override
     public PaymentProvider findById(Long id) {
@@ -31,7 +35,8 @@ public class PaymentProviderService implements BaseService<PaymentProvider> {
     }
 
     @Override
-    public void save(PaymentProvider paymentProvider) {
+    public void save(BaseDto baseDto) {
+        PaymentProvider paymentProvider = paymentProviderCreateRequestMapper.toEntity((PaymentProviderCreateRequest) baseDto);
         paymentProvider.setCreationTime(LocalDateTime.now());
         paymentProviderRepository.save(paymentProvider);
     }
@@ -42,7 +47,7 @@ public class PaymentProviderService implements BaseService<PaymentProvider> {
     }
 
     @Override
-    public void update(PaymentProvider paymentProvider) {
-
+    public PaymentProvider update(PaymentProvider paymentProvider) {
+        return null;
     }
 }
