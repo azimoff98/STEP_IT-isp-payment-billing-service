@@ -1,0 +1,9 @@
+.idea
+# Default ignored files
+/isp-payment-billing-service.iws
+
+# Project exclude paths
+/target/
+
+# Datasource local storage ignored files
+/.ideaDataSources/
