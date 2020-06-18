@@ -14,12 +14,17 @@ import az.itstep.pbs.util.RandomGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class SubscriptionService implements BaseService<Subscription> {
 
 
@@ -29,6 +34,48 @@ public class SubscriptionService implements BaseService<Subscription> {
     private final SubscriptionCreateRequestMapper subscriptionCreateRequestMapper;
     private final RandomGenerator randomGenerator;
 
+
+    public Subscription findBySubscriptionNumber(String subscriptionNumber){
+        return subscriptionRepository.findBySubscriptionNumber(subscriptionNumber)
+                .orElseThrow(() -> new NotFoundException("No subscription found with number: "+subscriptionNumber));
+    }
+
+    public void debit(String subscriptionNumber, BigDecimal amount){
+        log.info("Increase balance of subscription with number: {}", subscriptionNumber);
+        Subscription subscription = subscriptionRepository.findBySubscriptionNumber(subscriptionNumber)
+                .orElseThrow(() -> new NotFoundException("No subscription found with number: "+subscriptionNumber));
+
+        BigDecimal newBalance = amount.add(subscription.getBalance());
+        subscription.setBalance(newBalance);
+        subscription = prolong(subscription);
+        subscription.setLastPaymentDate(LocalDateTime.now());
+
+        subscriptionRepository.save(subscription);
+    }
+
+    public void credit(Subscription subscription){
+        BigDecimal servicePrice = subscription.getServiceType().getPrice();
+        log.info("Service price for subscription: {} is: {}", subscription.getSubscriptionNumber(), servicePrice);
+        BigDecimal newBalance = subscription.getBalance().subtract(servicePrice);
+        subscription.setBalance(newBalance);
+        subscriptionRepository.save(subscription);
+    }
+
+    /**
+     *
+     * @param subscription will be prolonged extra 30 days
+     * @return subscription
+     */
+    public Subscription prolong(Subscription subscription){
+        LocalDateTime blockingDate = subscription.getScheduledBlockingDate();
+        if(blockingDate == null){
+            blockingDate = LocalDate.now().atStartOfDay();
+        }
+        LocalDateTime prolonged = blockingDate.plusDays(31).minusSeconds(1);
+
+        subscription.setScheduledBlockingDate(prolonged);
+        return subscription;
+    }
 
     @Override
     public Subscription findById(Long id) {

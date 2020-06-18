@@ -1,12 +1,11 @@
 package az.itstep.pbs.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.List;
 
@@ -15,6 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Subscriber extends BaseEntity{
 
     @Column(length = 30, nullable = false)
@@ -28,6 +28,7 @@ public class Subscriber extends BaseEntity{
     private String address;
     @Column(length = 13 ,nullable = false)
     private String phoneNumber;
-    @OneToMany(mappedBy = "subscriber")
+    @OneToMany(mappedBy = "subscriber", fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Subscription> subscriptions;
 }

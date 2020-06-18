@@ -11,4 +11,8 @@ public class RandomGenerator {
         return RandomStringUtils.random(12, true, true).toUpperCase();
     }
 
+    public String generateRrn(){
+        return RandomStringUtils.random(15, false, true);
+    }
+
 }

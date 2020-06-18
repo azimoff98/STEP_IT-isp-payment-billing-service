@@ -1,10 +1,7 @@
 package az.itstep.pbs.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -29,6 +26,7 @@ public class Subscription extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "subscriber_id")
     @JsonIgnore
+    @ToString.Exclude
     private Subscriber subscriber;
 
     @ManyToOne
